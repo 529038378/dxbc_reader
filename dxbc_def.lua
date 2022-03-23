@@ -505,7 +505,60 @@ m.shader_def = {
         end
         return 'return'
     end,
-
+    --[[['resinfo_indexable(texture2d)(float,float,float,float)_uint(.*)'] = function (op_args, a, b, c, d)
+        local namea = get_var_name(a)
+        local nameb;
+        if b == 'l(0)' then
+            nameb = b
+        else
+            nameb = get_var_name(b)
+        end
+        local namec = get_var_name(c)
+        if d then
+        local named = get_var_name(d)
+        return _format('%s.GetDimensions(%s, %s, %s)', namea, nameb, namec, named)
+        else
+            return _format('%s.GetDimensions(%s, %s)', namec, namea, nameb)
+        end
+    end,--]]
+    ['resinfo_indexable.*'] = function (op_args, a, b, c)
+        return 'GetDimensions'
+    
+    --[[    local namea = get_var_name(a)
+        local nameb;
+        if b == 'l(0)' then
+            nameb = b
+        else
+            nameb = get_var_name(b)
+        end
+        local namec = get_var_name(c)
+        return _format('%s.GetDimensions(%s, %s)', namec, namea, nameb)--]]
+    end,
+    ['ld_aoffimmi_indexable.*'] = function (op_args, a, b, c)
+        local namea = get_var_name(a)
+        local nameb = get_var_name(b)
+        local namec = get_var_name(c)
+        return _format('%s= %s.load(%s)', namea, namec, nameb)
+    end,
+    ['gather4.*'] = function (op_args, a, b, c, d)
+        local namea = get_var_name(a)
+        local nameb = get_var_name(b)
+        local namec = get_var_name(c)
+        local named = get_var_name(d)
+        return _format('%s = %s.Gather(%s)', namea, namec, nameb)
+    end,
+    ['ld_raw.*'] = function (op_args, a, b, c)
+        local namea = get_var_name(a)
+        local nameb = get_var_name(b)
+        local namec = get_var_name(c)
+        return _format('%s = %s.load(%s)', namea, namec, nameb)
+    end,
+    ['uge'] = function (op_args, a, b, c)
+        local namea = get_var_name(a)
+        local nameb = get_var_name(b)
+        local namec = get_var_name(c)
+        return _format('%s = %s >= %s', namea, nameb, namec)
+    end,
     ['vs_%d_%d'] = false,
     ['ps_%d_%d'] = false,
     ['cs_%d_%d'] = false,
